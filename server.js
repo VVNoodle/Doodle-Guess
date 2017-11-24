@@ -19,7 +19,7 @@ var line_history = [];
 io.on("connection", socket => {
   // send all the lines to a new client (just joined)
   for (var i in line_history) {
-    socket.emit("draw_line", { line: line_history[i] });
+    socket.emit("draw_line", { newLine: line_history[i] });
   }
 
   //add a handler for our own message-type draw_line to the new client

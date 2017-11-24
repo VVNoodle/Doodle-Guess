@@ -17,8 +17,8 @@ document.addEventListener("DOMContentLoaded", () => {
   var context = canvas.getContext("2d");
 
   // window dimensions
-  var width = window.innerWidth;
-  var height = window.innerHeight;
+  var width = window.innerWidth || document.body.clientWidth;
+  var height = window.innerHeight || document.body.clientHeight;
 
   // tell socket to connect to server
   var socket = io.connect();
@@ -45,6 +45,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   socket.on("draw_line", data => {
     var line = data.newLine;
+    console.log(line);
 
     // start a new path
     context.beginPath();

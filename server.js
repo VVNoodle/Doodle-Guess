@@ -18,9 +18,15 @@ var line_history = [];
 // function is called and the socket of the new client is passed as an argument
 io.on("connection", socket => {
   // send all the lines to a new client (just joined)
-  for (var i in line_history) {
-    socket.emit("draw_line", { newLine: line_history[i] });
+  function fillInProgress() {
+    for (var i in line_history) {
+      socket.emit("draw_line", { newLine: line_history[i] });
+    }
   }
+  fillInProgress();
+  socket.on("resize", () => {
+    fillInProgress();
+  });
 
   //add a handler for our own message-type draw_line to the new client
   //each time we recieve a line, we ad it to line_history and send it to

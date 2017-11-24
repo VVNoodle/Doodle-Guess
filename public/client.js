@@ -19,14 +19,23 @@ document.addEventListener("DOMContentLoaded", () => {
   // window dimensions
   var width = window.innerWidth;
   var height = window.innerHeight;
-  console.log(width + " " + height);
 
   // tell socket to connect to server
   var socket = io.connect();
 
-  // sets the canvas width and height properties to the browser width and height
-  canvas.width = width;
-  canvas.height = height;
+  function resize() {
+    width = window.innerWidth;
+    height = window.innerHeight;
+    // sets the canvas width and height properties to the browser width and height
+    canvas.width = width;
+    canvas.height = height;
+  }
+  resize();
+  window.addEventListener("resize", redraw, false);
+  function redraw() {
+    resize();
+    socket.emit("resize");
+  }
 
   // mouse.click is true whenever we keep mouse button clicked
   canvas.onmousedown = e => {
@@ -47,7 +56,6 @@ document.addEventListener("DOMContentLoaded", () => {
   socket.on("draw_line", data => {
     var line = data.newLine;
     console.log(line);
-
     // start a new path
     context.beginPath();
     context.lineWidth = 2;

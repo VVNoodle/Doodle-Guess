@@ -17,15 +17,16 @@ document.addEventListener("DOMContentLoaded", () => {
   var context = canvas.getContext("2d");
 
   // window dimensions
-  var width = window.innerWidth || document.body.clientWidth;
-  var height = window.innerHeight || document.body.clientHeight;
+  var width = window.innerWidth;
+  var height = window.innerHeight;
+  console.log(width + " " + height);
 
   // tell socket to connect to server
   var socket = io.connect();
 
   // sets the canvas width and height properties to the browser width and height
-  context.width = width;
-  context.height = height;
+  canvas.width = width;
+  canvas.height = height;
 
   // mouse.click is true whenever we keep mouse button clicked
   canvas.onmousedown = e => {

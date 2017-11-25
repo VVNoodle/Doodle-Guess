@@ -15,6 +15,9 @@ server.listen(8080, () => {
 // declare an array line_histry to keep strack of all lines ever drawn
 var line_history = [];
 
+// stores list of nouns
+var wordList = [];
+
 // handler for new incoming connection
 // Whenever a new client connects, this
 // function is called and the socket of the new client is passed as an argument
@@ -38,5 +41,17 @@ io.on("connection", socket => {
     line_history.push(data.line);
     // send line to all clients
     io.emit("draw_line", { newLine: data.line });
+  });
+
+  socket.on("getList", () => {
+    let lineReader = require("readline").createInterface({
+      input: require("fs").createReadStream("./public/test.txt")
+    });
+
+    // store every word in wordlist
+    lineReader.on("line", function(line) {
+      wordList.push(line);
+      socket.emit("getList", { wordList });
+    });
   });
 });

@@ -14,8 +14,7 @@ html {
   position: absolute;
 }
 
-#clear {
-  background: #ff0000;
+button {
   border-radius: 5px;
   padding: 8px 20px;
   color: #ffffff;
@@ -23,4 +22,12 @@ html {
   font: normal 24px/1 "Noto Sans", sans-serif;
   text-align: center;
   border-style: solid;
+}
+
+#clear {
+  background: #ff0000;
+}
+
+#generate {
+  background: rgb(90, 237, 222);
 }

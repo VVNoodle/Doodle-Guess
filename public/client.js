@@ -16,26 +16,16 @@ document.addEventListener("DOMContentLoaded", () => {
   // create a 2D drawing context to draw
   var context = canvas.getContext("2d");
 
-  // window dimensions
-  var width = window.innerWidth;
-  var height = window.innerHeight;
-
   // tell socket to connect to server
   var socket = io.connect();
 
-  function resize() {
-    width = window.innerWidth;
-    height = window.innerHeight;
-    // sets the canvas width and height properties to the browser width and height
-    canvas.width = width;
-    canvas.height = height;
-  }
-  resize();
-  window.addEventListener("resize", redraw, false);
-  function redraw() {
-    resize();
-    socket.emit("resize");
-  }
+  // socket.emit("getOriginalDimension");
+  // window dimensions
+  width = window.innerWidth;
+  height = window.innerHeight;
+  // sets the canvas width and height properties to the browser width and height
+  canvas.width = width;
+  canvas.height = height;
 
   // mouse.click is true whenever we keep mouse button clicked
   canvas.onmousedown = e => {
@@ -81,4 +71,12 @@ document.addEventListener("DOMContentLoaded", () => {
     setTimeout(mainLoop, 25);
   }
   mainLoop();
+
+  var clearButton = document.getElementById("clear");
+  clearButton.addEventListener("click", e => {
+    socket.emit("clear");
+  });
+  socket.on("clearRect", () => {
+    context.clearRect(0, 0, width, height);
+  });
 });

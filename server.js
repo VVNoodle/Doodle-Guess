@@ -1,3 +1,5 @@
+// io = all clients. socket = the specific client emitted
+
 var express = require("express");
 var app = express();
 var http = require("http");
@@ -17,16 +19,15 @@ var line_history = [];
 // Whenever a new client connects, this
 // function is called and the socket of the new client is passed as an argument
 io.on("connection", socket => {
-  // send all the lines to a new client (just joined)
-  function fillInProgress() {
-    for (var i in line_history) {
-      socket.emit("draw_line", { newLine: line_history[i] });
-    }
-  }
-  fillInProgress();
-  socket.on("resize", () => {
-    fillInProgress();
+  socket.on("clear", () => {
+    line_history = [];
+    io.emit("clearRect");
   });
+
+  // send all the lines to a new client (just joined)
+  for (var i in line_history) {
+    socket.emit("draw_line", { newLine: line_history[i] });
+  }
 
   //add a handler for our own message-type draw_line to the new client
   //each time we recieve a line, we ad it to line_history and send it to

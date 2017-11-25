@@ -43,9 +43,16 @@ document.addEventListener("DOMContentLoaded", () => {
     mouse.move = true;
   };
 
+  // get random color for player marker
+  let x = Math.floor(Math.random() * 256);
+  let y = Math.floor(Math.random() * 256);
+  let z = Math.floor(Math.random() * 256);
+  var myColor = "rgb(" + x + "," + y + "," + z + ")";
+
   socket.on("draw_line", data => {
     var line = data.newLine;
-    console.log(line);
+    context.strokeStyle = line[2];
+
     // start a new path
     context.beginPath();
     context.lineWidth = 2;
@@ -62,12 +69,16 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function mainLoop() {
     if (mouse.click && mouse.move && mouse.pos_prev) {
+      console.log(context.strokeStyle);
       socket.emit("draw_line", {
-        line: [mouse.pos, mouse.pos_prev]
+        line: [mouse.pos, mouse.pos_prev, myColor]
       });
       mouse.move = false;
     }
-    mouse.pos_prev = { x: mouse.pos.x, y: mouse.pos.y };
+    mouse.pos_prev = {
+      x: mouse.pos.x,
+      y: mouse.pos.y
+    };
     setTimeout(mainLoop, 25);
   }
   mainLoop();

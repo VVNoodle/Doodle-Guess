@@ -32,6 +32,7 @@ io.on("connection", socket => {
   //add a handler for our own message-type draw_line to the new client
   //each time we recieve a line, we ad it to line_history and send it to
   // all connected clients so they can update their canvases
+  // THE SOLE REASON OF THIS IS TO PUSH TO ARRAY. THATS LITERALLY IT
   socket.on("draw_line", data => {
     // add received line to history
     line_history.push(data.line);

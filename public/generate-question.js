@@ -1,23 +1,28 @@
 var socket = io.connect();
 
 // array of words
-var wordList = [];
 var randomWord = "";
 var currentWord = document.getElementById("currentWord");
 var generateButton = document.getElementById("generate");
+var hintButton = document.getElementById("hint");
+var currentImage = document.getElementById("currentImage");
+
+var questionMark = "https://image.flaticon.com/icons/png/128/39/39293.png";
 
 socket.emit("getList");
-socket.on("getList", list => {
-  wordList = list.wordList;
+
+socket.on("getRand", rng => {
+  randomWord = rng;
+  currentWord.innerHTML = randomWord;
+  console.log(randomWord);
+  currentImage.src = questionMark;
 });
 
-function generate() {
-  randomWord = wordList[Math.floor(Math.random() * wordList.length)];
-}
-
 generateButton.addEventListener("click", () => {
-  generate();
-  currentWord.innerHTML = randomWord;
+  socket.emit("getRand");
+});
+
+hintButton.addEventListener("click", () => {
   socket.emit("displayImage", randomWord);
 });
 

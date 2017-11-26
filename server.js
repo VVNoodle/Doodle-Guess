@@ -19,14 +19,18 @@ var line_history = [];
 // stores list of nouns
 var wordList = [];
 
+// current random word
+var currentRandomWord = "";
+
 // handler for new incoming connection
 // Whenever a new client connects, this
 // function is called and the socket of the new client is passed as an argument
 io.on("connection", socket => {
-  socket.on("displayImage", randomWord => {
+  console.log(currentRandomWord);
+  function uploadImage(randomWord) {
     axios
       .get(
-        `https://pixabay.com/api/?key=3371927-979f697ee2f27636622bd4e54&per_page=3&q=${
+        `https://pixabay.com/api/?key=3371927-979f697ee2f27636622bd4e54&safesearch=true&per_page=3&q=${
           randomWord
         }`
       )
@@ -37,6 +41,10 @@ io.on("connection", socket => {
         console.log(err);
         return new Error(err);
       });
+  }
+
+  socket.on("displayImage", randomWord => {
+    uploadImage(randomWord);
   });
 
   socket.on("clear", () => {
@@ -44,6 +52,9 @@ io.on("connection", socket => {
     io.emit("clearRect");
   });
 
+  if (currentRandomWord != "") {
+    socket.emit("getRand", currentRandomWord);
+  }
   // send all the lines to a new client (just joined)
   for (var i in line_history) {
     socket.emit("draw_line", { newLine: line_history[i] });
@@ -64,11 +75,14 @@ io.on("connection", socket => {
     let lineReader = require("readline").createInterface({
       input: require("fs").createReadStream("./public/nounlist.txt")
     });
-
     // store every word in wordlist
     lineReader.on("line", function(line) {
       wordList.push(line);
-      socket.emit("getList", { wordList });
     });
+  });
+
+  socket.on("getRand", () => {
+    currentRandomWord = wordList[Math.floor(Math.random() * wordList.length)];
+    io.emit("getRand", currentRandomWord);
   });
 });

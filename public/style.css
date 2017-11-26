@@ -35,6 +35,10 @@ button {
   background: #ff0000;
 }
 
+#hint {
+  background: rgb(238, 238, 47);
+}
+
 #generate {
   background: rgb(90, 237, 222);
 }
@@ -46,8 +50,8 @@ button {
 #currentImage {
   max-width: 20vw;
   max-height: 20vh;
-  /* margin: auto;
-  display: block; */
+  margin: auto;
+  display: block;
 }
 
 #currentWord {

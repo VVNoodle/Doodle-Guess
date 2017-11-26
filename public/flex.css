@@ -27,6 +27,12 @@
   grid-column: 2 / 3;
 }
 
+#hint {
+  grid-row-gap: 1vw;
+  grid-row: 3 / 4;
+  grid-column: 2 / 4;
+}
+
 #generate {
   grid-row-gap: 1vw;
 

@@ -1,5 +1,6 @@
 // io = all clients. socket = the specific client emitted
 
+var axios = require("axios");
 var express = require("express");
 var app = express();
 var http = require("http");
@@ -22,6 +23,22 @@ var wordList = [];
 // Whenever a new client connects, this
 // function is called and the socket of the new client is passed as an argument
 io.on("connection", socket => {
+  socket.on("displayImage", randomWord => {
+    axios
+      .get(
+        `https://pixabay.com/api/?key=3371927-979f697ee2f27636622bd4e54&per_page=3&q=${
+          randomWord
+        }`
+      )
+      .then(info => {
+        socket.emit("displayImage", info.data.hits[0].webformatURL);
+      })
+      .catch(err => {
+        console.log(err);
+        return new Error(err);
+      });
+  });
+
   socket.on("clear", () => {
     line_history = [];
     io.emit("clearRect");
@@ -45,7 +62,7 @@ io.on("connection", socket => {
 
   socket.on("getList", () => {
     let lineReader = require("readline").createInterface({
-      input: require("fs").createReadStream("./public/test.txt")
+      input: require("fs").createReadStream("./public/nounlist.txt")
     });
 
     // store every word in wordlist

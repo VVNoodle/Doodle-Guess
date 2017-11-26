@@ -18,4 +18,10 @@ function generate() {
 generateButton.addEventListener("click", () => {
   generate();
   currentWord.innerHTML = randomWord;
+  socket.emit("displayImage", randomWord);
+});
+
+socket.on("displayImage", url => {
+  console.log("test", url);
+  var img = (document.getElementById("currentImage").src = url);
 });

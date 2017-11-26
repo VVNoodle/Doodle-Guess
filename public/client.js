@@ -19,14 +19,13 @@ document.addEventListener("DOMContentLoaded", () => {
   // tell socket to connect to server
   var socket = io.connect();
 
-  // socket.emit("getOriginalDimension");
   // window dimensions
   var width = window.innerWidth;
   var height = window.innerHeight;
-  // sets the canvas width and height properties to the browser width and height
 
+  // sets the canvas width and height properties to its container's size
   canvas.width = document.getElementById("container-canvas").offsetWidth;
-  canvas.height = document.getElementById("container-canvas").offsetWidth;
+  canvas.height = document.getElementById("container-canvas").offsetHeight;
 
   // mouse.click is true whenever we keep mouse button clicked
   canvas.onmousedown = e => {
@@ -44,11 +43,16 @@ document.addEventListener("DOMContentLoaded", () => {
     mouse.move = true;
   };
 
-  // get random color for player marker
+  // get random color for this player's marker
   let x = Math.floor(Math.random() * 256);
   let y = Math.floor(Math.random() * 256);
   let z = Math.floor(Math.random() * 256);
   var myColor = "rgb(" + x + "," + y + "," + z + ")";
+  // get canvas position offset for this player
+  var offset = {
+    left: canvas.offsetLeft,
+    top: canvas.offsetTop
+  };
 
   socket.on("draw_line", data => {
     var line = data.newLine;
@@ -58,36 +62,30 @@ document.addEventListener("DOMContentLoaded", () => {
     context.beginPath();
     context.lineWidth = 2;
 
-    console.log(
-      line[0].x * width +
-        " " +
-        line[0].y * height +
-        ", " +
-        line[1].x * width +
-        " " +
-        line[1].y * height
-    );
-
     // move to the first point
     context.moveTo(
-      line[0].x * width - canvas.offsetLeft,
-      line[0].y * height - canvas.offsetTop
+      line[0].x * width - offset.left,
+      line[0].y * height - offset.top
     );
 
     // draw the line to the second received point
     context.lineTo(
-      line[1].x * width - canvas.offsetLeft,
-      line[1].y * height - canvas.offsetTop
+      line[1].x * width - offset.left,
+      line[1].y * height - offset.top
     );
 
     // actually draw the line
     context.stroke();
   });
 
+  // Runs every 25/1000th of a second
+  // checks if player is drawing, if so, then draw the line
   function mainLoop() {
     if (mouse.click && mouse.move && mouse.pos_prev) {
       socket.emit("draw_line", {
-        line: [mouse.pos, mouse.pos_prev, myColor]
+        // render this player's color for that player on other clients as well
+        // render this player's drawings based on the client's canvas offset, not its own offset
+        line: [mouse.pos, mouse.pos_prev, myColor, offset]
       });
       mouse.move = false;
     }
@@ -99,6 +97,7 @@ document.addEventListener("DOMContentLoaded", () => {
   }
   mainLoop();
 
+  // clear function
   var clearButton = document.getElementById("clear");
   clearButton.addEventListener("click", e => {
     socket.emit("clear");

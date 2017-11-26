@@ -4,8 +4,8 @@ document.addEventListener("DOMContentLoaded", () => {
     click: false,
     move: false,
     pos: {
-      x: 0,
-      y: 0
+      x: 1100,
+      y: 1100
     },
     pos_prev: false
   };
@@ -21,11 +21,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // socket.emit("getOriginalDimension");
   // window dimensions
-  width = window.innerWidth;
-  height = window.innerHeight;
+  var width = window.innerWidth;
+  var height = window.innerHeight;
   // sets the canvas width and height properties to the browser width and height
-  canvas.width = width;
-  canvas.height = height;
+
+  canvas.width = document.getElementById("container-canvas").offsetWidth;
+  canvas.height = document.getElementById("container-canvas").offsetWidth;
 
   // mouse.click is true whenever we keep mouse button clicked
   canvas.onmousedown = e => {
@@ -57,11 +58,27 @@ document.addEventListener("DOMContentLoaded", () => {
     context.beginPath();
     context.lineWidth = 2;
 
+    console.log(
+      line[0].x * width +
+        " " +
+        line[0].y * height +
+        ", " +
+        line[1].x * width +
+        " " +
+        line[1].y * height
+    );
+
     // move to the first point
-    context.moveTo(line[0].x * width, line[0].y * height);
+    context.moveTo(
+      line[0].x * width - canvas.offsetLeft,
+      line[0].y * height - canvas.offsetTop
+    );
 
     // draw the line to the second received point
-    context.lineTo(line[1].x * width, line[1].y * height);
+    context.lineTo(
+      line[1].x * width - canvas.offsetLeft,
+      line[1].y * height - canvas.offsetTop
+    );
 
     // actually draw the line
     context.stroke();
@@ -69,7 +86,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function mainLoop() {
     if (mouse.click && mouse.move && mouse.pos_prev) {
-      console.log(context.strokeStyle);
       socket.emit("draw_line", {
         line: [mouse.pos, mouse.pos_prev, myColor]
       });

@@ -7,15 +7,25 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="flex.css">
     <script src="socket.io/socket.io.js"></script>
     <script src="client.js"></script>
 </head>
 
 <body>
-    <button type="button" id="clear">clear</button>
-    <button type="button" id="generate">generate</button>
-    <h2 id="currentWord"></h2>
-    <canvas id="drawing"></canvas>
+    <div id="container">
+        <div id="container-indicators">
+            <button type="button" id="clear">CLEAR</button>
+            <button type="button" id="generate">GENERATE</button>
+            <p id="p-one">P1:</p>
+            <p id="p-two">P2:</p>
+            <img id="currentImage" src="http://redhint.com/wp-content/uploads/2017/09/Twitter.jpg" alt="image">
+            <h2 id="currentWord">word</h2>
+        </div>
+        <div id="container-canvas">
+            <canvas id="drawing"></canvas>
+        </div>
+    </div>
     <script src="generate-question.js"></script>
 </body>
 
